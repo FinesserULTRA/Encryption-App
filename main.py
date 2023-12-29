@@ -5,59 +5,48 @@ from PIL import Image, ImageTk
 
 class EncryptionApp:
     def __init__(self, master):
-        # Initialize the EncryptionApp
         self.master = master
         self.master.title("Encryption App")
         self.master.geometry("200x200")
-        # StringVars to store various inputs
         self.file_type = tk.StringVar()
         self.file_path = tk.StringVar()
         self.text_to_encrypt = tk.StringVar()
         self.output_text = tk.StringVar()
         self.key = tk.StringVar()
         self.encryptType = tk.StringVar()
-        # Initialize Tkinter style
         self.master_style = ttk.Style(master)
         self.master_style.theme_use()
-        # Label to display images
         self.image_label = ttk.Label(self.master)
-        # Label to display output status
         self.output_label = ttk.Label(self.master, text="")
-        # StringVar to store secret text
         self.secret_text = tk.StringVar()
-        # Create the main UI widgets
         self.create_widgets()
 
     def create_widgets(self):
-        # Label and Combobox for selecting file type
         ttk.Label(self.master, text="Select File Type:").pack()
+
         selection = ttk.Combobox(self.master, textvariable=self.file_type)
         selection["values"] = ("Text", "Image")
         selection['state'] = 'readonly'
         selection.pack()
         selection.bind("<<ComboboxSelected>>", self.output_options)
 
-        # Frames for Text and Image options
         self.text_frame = ttk.Frame(self.master)
         self.text_options()
 
         self.image_frame = ttk.Frame(self.master)
         self.image_options()
 
-        # Buttons to exit and clear output
         ttk.Button(self.master, text="Exit", command=self.master.destroy).pack(side="bottom", pady=(0, 35),
                                                                                fill="x")
         ttk.Button(self.master, text="Clear Output", command=self.clear_output).pack(side="bottom", fill="x")
 
     def output_options(self, event):
-        # Display text or image options based on user selection
         if self.file_type.get() == "Text":
             self.show_text_options()
         elif self.file_type.get() == "Image":
             self.show_image_options()
 
     def show_text_options(self):
-        # Display text options, hide image options
         self.master.geometry("400x550")
         self.text_frame.pack()
         self.image_frame.pack_forget()
@@ -66,7 +55,6 @@ class EncryptionApp:
         self.hide_encrypt_buttons()
 
     def show_image_options(self):
-        # Display image options, hide text options
         self.master.geometry("400x550")
         self.image_frame.pack()
         self.text_frame.pack_forget()
@@ -75,21 +63,17 @@ class EncryptionApp:
         self.hide_encrypt_buttons()
 
     def hide_image_label(self):
-        # Hide the image label
         self.image_label.configure(image="")
         self.image_label.image = None
 
     def hide_text_entry(self):
-        # Forget the text entry widget
         self.text_entry.forget()
 
     def hide_key_entry(self):
-        # Forget key-related widgets
         self.key_label.forget()
         self.key_entry.forget()
 
     def hide_encrypt_buttons(self):
-        # Forget encryption-related buttons and widgets
         self.encrypt_button.forget()
         self.decrypt_button.forget()
         self.display_button.forget()
@@ -97,18 +81,17 @@ class EncryptionApp:
         self.save_button.forget()
 
     def clear_output(self):
-        # Clear output labels and text box
         self.output_text.set("")
         self.output_textbox.delete(1.0, tk.END)
         self.hide_image_label()
 
     def encrypt_type(self, event):
-        # Show key entry for selected encryption type
-        if self.encryptType.get() == "Caesar Cipher" or self.encryptType.get() == "Vigenere Cipher":
+        if self.encryptType.get() == "Caesar Cipher":
+            self.show_key_entry()
+        elif self.encryptType.get() == "Vigenere Cipher":
             self.show_key_entry()
 
     def text_options(self):
-        # Text Encryption Options
         ttk.Label(self.text_frame, text="Select Encryption Method:").pack()
 
         encrypt_type = ttk.Combobox(self.text_frame, textvariable=self.encryptType)
@@ -117,17 +100,14 @@ class EncryptionApp:
         encrypt_type.pack()
         encrypt_type.bind("<<ComboboxSelected>>", self.encrypt_type)
 
-        # Text Entry Widgets
         self.option_output = ttk.Label(self.text_frame, text="Select File or Enter Text:")
         self.browse_option = ttk.Button(self.text_frame, text="Browse", command=self.browse_text_file)
         self.key_label = ttk.Label(self.text_frame, text="Enter Key:")
         self.key_entry = ttk.Entry(self.text_frame, textvariable=self.key)
         self.text_entry = ttk.Entry(self.text_frame, textvariable=self.text_to_encrypt, width=60)
 
-        # Output Options Widgets
         ttk.Label(self.text_frame, text="Output Options:")
 
-        # Encryption and Output Buttons
         self.encrypt_button = ttk.Button(self.text_frame, text="Encrypt", command=self.encrypt_text)
         self.decrypt_button = ttk.Button(self.text_frame, text="Decrypt", command=self.decrypt_text)
         self.display_button = ttk.Button(self.text_frame, text="Display in Textbox",
@@ -136,7 +116,6 @@ class EncryptionApp:
         self.output_textbox = tk.Text(self.text_frame, height=10, width=40)
 
     def image_options(self):
-        # Image Encryption Options
         ttk.Label(self.image_frame, text="Select Encryption Method:").pack()
 
         encrypt_type = ttk.Combobox(self.image_frame, textvariable=self.encryptType)
@@ -145,7 +124,6 @@ class EncryptionApp:
         encrypt_type.pack()
         encrypt_type.bind("<<ComboboxSelected>>", self.encrypt_type)
 
-        # Image File Entry
         ttk.Label(self.image_frame, text="Select Image File:").pack()
         ttk.Entry(self.image_frame, textvariable=self.file_path).pack()
         ttk.Button(self.image_frame, text="Browse", command=self.browse_image_file).pack()
@@ -157,13 +135,13 @@ class EncryptionApp:
         ttk.Label(self.image_frame, text="Enter Key:").pack()
         ttk.Entry(self.image_frame, textvariable=self.key).pack()
 
-        # Encryption and Output Buttons
         ttk.Button(self.image_frame, text="Encrypt", command=self.encrypt_image).pack()
         ttk.Button(self.image_frame, text="Decrypt", command=self.decrypt_image).pack()
         ttk.Button(self.image_frame, text="Display Image", command=self.display_image).pack()
 
+    # ttk.Button(self.image_frame, text="Save Image", command=self.save_image).pack()
+
     def browse_secret_data(self):
-        # Browse for and load secret data
         secret_data_path = filedialog.askopenfilename(filetypes=[("Text Files", "*.txt")])
         if secret_data_path:
             with open(secret_data_path, "r") as file:
@@ -171,7 +149,6 @@ class EncryptionApp:
                 self.text_to_encrypt.set(secret_data)
 
     def browse_text_file(self):
-        # Browse for and load text file
         secret_data_path = filedialog.askopenfilename(filetypes=[("Text Files", "*.txt")])
         if secret_data_path:
             with open(secret_data_path, "r") as file:
@@ -179,13 +156,11 @@ class EncryptionApp:
                 self.text_to_encrypt.set(secret_data)
 
     def browse_image_file(self):
-        # Browse for and load image file, then automatically display the selected image
         file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg;*.gif")])
         self.file_path.set(file_path)
-        self.display_image()
+        self.display_image()  # Automatically display the selected image
 
     def display_image(self):
-        # Display the selected image
         file_path = self.file_path.get()
         if file_path:
             original_image = Image.open(file_path)
@@ -195,7 +170,6 @@ class EncryptionApp:
             self.image_label.pack()
 
     def encrypt_image(self):
-        # Encrypt image using Steganography
         file_path = self.file_path.get()
         secret_text = self.text_to_encrypt.get()
 
@@ -207,7 +181,6 @@ class EncryptionApp:
             self.output_label.config(text="Encryption Successful!")
 
     def decrypt_image(self):
-        # Decrypt image using Steganography
         file_path = "encoded_image.png"  # Use the encoded image file
         if file_path:
             image_encryptor = ImageEncryptor()
@@ -215,13 +188,11 @@ class EncryptionApp:
             self.output_label.config(text=f"Decoded Text: {decoded_text}")
 
     def display_output_in_textbox(self):
-        # Display output text in the text box
         output_text = self.output_text.get()
         self.output_textbox.delete(1.0, tk.END)
         self.output_textbox.insert(tk.END, output_text)
 
     def save_to_file(self):
-        # Save output text to a file
         output_text = self.output_text.get()
         file_path = filedialog.asksaveasfilename(
             defaultextension=".txt", filetypes=[("Text Files", "*.txt")],
@@ -232,13 +203,11 @@ class EncryptionApp:
                 file.write(output_text)
 
     def encrypt_text(self):
-        # Encrypt text using selected cipher type
         key = self.key_entry.get().encode()
         text = self.text_to_encrypt.get()
 
         cipher_type = self.encryptType.get()
         result = ""
-
         if cipher_type == "Caesar Cipher":
             caesar_cipher = CaesarCipher(int(key))
             result = caesar_cipher.encrypt(text)
@@ -259,7 +228,6 @@ class EncryptionApp:
         self.output_text.set(result)
 
     def decrypt_text(self):
-        # Decrypt text using selected cipher type
         key = self.key_entry.get().encode()
         text = self.text_to_encrypt.get()
 
@@ -283,19 +251,120 @@ class EncryptionApp:
         self.output_text.set(result)
 
     def show_key_entry(self):
-        # Display key-related widgets
         self.hide_encrypt_buttons()
-        self.browse_option.pack()
+        self.option_output.pack()
         self.text_entry.pack()
+        self.browse_option.pack()
         self.key_label.pack()
         self.key_entry.pack()
 
-        # Encryption and Output Buttons
         self.encrypt_button.pack()
         self.decrypt_button.pack()
         self.display_button.pack()
         self.output_textbox.pack()
         self.save_button.pack()
+
+    def hide_key_entry(self):
+        self.hide_encrypt_buttons()
+        self.browse_option.forget()
+        self.key_label.forget()
+        self.text_entry.forget()
+        self.key_entry.forget()
+        self.encrypt_button.pack()
+        self.decrypt_button.pack()
+        self.display_button.pack()
+        self.output_textbox.pack()
+        self.save_button.pack()
+
+
+class CaesarCipher:
+    def __init__(self, shift):
+        self.shift = shift % 26
+
+    def encrypt(self, plaintext):
+        result = "".join([chr((ord(char) + self.shift - 65) % 26 + 65) if char.isupper() else chr(
+            (ord(char) + self.shift - 97) % 26 + 97) if char.islower() else char for char in plaintext])
+        return result
+
+    def decrypt(self, ciphertext):
+        result = "".join([chr((ord(char) - self.shift - 65) % 26 + 65) if char.isupper() else chr(
+            (ord(char) - self.shift - 97) % 26 + 97) if char.islower() else char for char in ciphertext])
+        return result
+
+
+class VigenereCipher:
+    def __init__(self, key):
+        self.key = key
+
+    def extend_key(self, text):
+        extended_key = self.key
+        while len(extended_key) < len(text) :
+            extended_key += self.key
+        return extended_key
+
+    def encrypt(self, plaintext):
+        plaintext = plaintext.upper()
+        extended_key = self.extend_key(plaintext)
+        ciphertext = ""
+        for i in range(len(plaintext)):
+            if plaintext[i].isalpha() and plaintext[i].isupper():
+
+                shift = ord(extended_key[i]) - ord('A')
+                encrypted_char = chr((ord(plaintext[i]) + shift - ord('A')) % 26 + ord('A'))
+                ciphertext += encrypted_char
+            else:
+                ciphertext += plaintext[i]
+        return ciphertext
+
+    def decrypt(self, ciphertext):
+        ciphertext = ciphertext.upper()
+        extended_key = self.extend_key(ciphertext)
+        decrypted_text = ""
+        for i in range(len(ciphertext)):
+            if ciphertext[i].isalpha():
+                shift = ord(extended_key[i]) - ord('A')
+                decrypted_char = chr((ord(ciphertext[i]) - shift - ord('A')) % 26 + ord('A'))
+                decrypted_text += decrypted_char
+            else:
+                decrypted_text += ciphertext[i]
+        return decrypted_text
+
+class ImageEncryptor:
+    def hide_text(self, image_path, text):
+        original_image = Image.open(image_path)
+        width, height = original_image.size
+        pixels = original_image.load()
+
+        text_binary = ''.join(format(ord(char), '08b') for char in text)
+        text_index = 0
+
+        for i in range(width):
+            for j in range(height):
+                pixel = list(pixels[i, j])
+                for color_channel in range(3):  # Iterate over RGB channels
+                    if text_index < len(text_binary):
+                        pixel[color_channel] = int(format(pixel[color_channel], '08b')[:-1] + text_binary[text_index],
+                                                   2)
+                        text_index += 1
+                pixels[i, j] = tuple(pixel)
+
+        return original_image
+
+    def reveal_text(self, image_path):
+        encrypted_image = Image.open(image_path)
+        width, height = encrypted_image.size
+        pixels = encrypted_image.load()
+        binary_data = ''
+
+        for i in range(width):
+            for j in range(height):
+                pixel = list(pixels[i, j])
+                for color_channel in range(3):
+                    binary_data += format(pixel[color_channel], '08b')[-1]
+
+        decoded_text = ''.join(chr(int(binary_data[i:i + 8], 2)) for i in range(0, len(binary_data), 8))
+        return decoded_text
+
 
 if __name__ == "__main__":
     root = tk.Tk()
